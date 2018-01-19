@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.phearun.model.User;
+import com.phearun.response.Response;
+import com.phearun.response.ResponseList;
 import com.phearun.service.UserService;
 
 @RestController // @Controller + @ResponseBody
@@ -31,13 +33,29 @@ public class UserRestController {
 	@Autowired
 	private UserService userService;
 	
-	@GetMapping("/users")
-	public ResponseEntity<List<User>> getAllUsers(){
+	/*@GetMapping("/users")
+	public Map<String, Object> getAllUsers(){
+		Map<String, Object> response = new HashMap<>();
 		List<User> users = userService.getAllUsers();
-		if(users.isEmpty())
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		
-		return ResponseEntity.ok(users);
+		if(users.isEmpty()){
+			response.put("message", "No user data!");
+			response.put("status_code", HttpStatus.NO_CONTENT.value());
+			return response; 
+		}
+		response.put("data", users);
+		response.put("message", "Successfully!");
+		
+		return response;
+	}*/
+	
+	@GetMapping("/users")
+	public Response getAllUsers(){
+		List<User> users = userService.getAllUsers();
+		if(users.isEmpty()){
+			return new Response("No user data!"); 
+		}
+		return new ResponseList("Successfully!", users);
 	}
 	
 	@GetMapping("/users/{id}")
